@@ -7,7 +7,39 @@ onto the check), and a running "tray" they show the server.
 
 Built with **Next.js (App Router) + React**. The AI runs on **Groq**, called
 from a **server-side API route** — so your Groq API key stays on the server and
-is never exposed in the browser. Deploys free on **Vercel**.
+is never exposed in the browser. Optimized for deployment on **Vercel**.
+
+---
+
+## 🚀 Quick Deploy to Vercel
+
+### Option 1: One-Click Deploy (Recommended)
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/your-username/bloom-menu-app&env=GROQ_API_KEY,GROQ_MODEL&envDescription=Groq%20API%20Key%20for%20AI%20summaries&envLink=https://console.groq.com/keys)
+
+### Option 2: Manual Deploy
+
+1. **Push to GitHub**
+   ```bash
+   git init
+   git add .
+   git commit -m "Initial commit"
+   git remote add origin https://github.com/your-username/bloom-menu-app.git
+   git push -u origin main
+   ```
+
+2. **Deploy on Vercel**
+   - Go to [vercel.com](https://vercel.com) and sign in with GitHub
+   - Click **Add New…** → **Project**
+   - Import your repository
+   - Vercel auto-detects Next.js — click **Deploy**
+
+3. **Add Environment Variables** (Vercel Dashboard → Settings → Environment Variables)
+   - `GROQ_API_KEY` — Your Groq API key from [console.groq.com/keys](https://console.groq.com/keys)
+   - `GROQ_MODEL` (optional) — e.g., `openai/gpt-oss-20b`
+   - **Redeploy** after adding variables
+
+4. **Done!** Your live URL will be `https://your-project.vercel.app`
 
 ---
 
@@ -78,17 +110,29 @@ each dish has a `name`, `category`, `price`, `emoji`, `image` path, `blurb`
 
 ---
 
-## 5. Deploy to Vercel (free)
+## 5. Vercel Deployment Details
 
-1. Push this folder to a new **GitHub** repo.
-2. Go to **https://vercel.com** → sign in with GitHub → **Add New… → Project**.
-3. Import the repo. Vercel detects Next.js — click **Deploy**.
-4. Add your key so the backend works in production: Vercel project →
-   **Settings → Environment Variables** → add `GROQ_API_KEY` (and `GROQ_MODEL`
-   if you changed it) → **Redeploy**.
+### Automatic Deployments
+Every `git push` to your connected branch triggers an automatic deployment.
 
-You'll get a URL like `https://your-project.vercel.app`. Every `git push`
-redeploys automatically.
+### Environment Variables in Vercel
+Set these in your Vercel project dashboard:
+- **Production**: For the live site
+- **Preview**: For pull request previews
+- **Development**: For local testing (optional)
+
+### Build Settings (Auto-detected)
+- **Framework**: Next.js
+- **Build Command**: `next build`
+- **Output Directory**: `.next`
+- **Install Command**: `npm install`
+
+### Performance Optimizations
+This project includes Vercel-specific optimizations:
+- **Standalone output** for smaller deployment size
+- **React Strict Mode** for better development
+- **Image optimization** (AVIF + WebP formats)
+- **Powered-by header removed** for cleaner responses
 
 ---
 
@@ -147,4 +191,23 @@ app/globals.css                 ← the whole visual design.
 components/                     ← the UI (cards, dish sheet, tray).
 scripts/generate-summaries.mjs  ← pre-bake summaries (npm run summaries).
 scripts/generate-qr.mjs         ← make the QR (npm run qr).
+vercel.json                     ← Vercel deployment configuration.
+.env.example                    ← environment variable template.
 ```
+
+## Troubleshooting
+
+### Build fails on Vercel
+- Check that all dependencies are in `package.json`
+- Ensure Node.js version is 18+ (Vercel defaults to 18)
+- Review build logs in Vercel dashboard
+
+### AI summaries not working
+- Verify `GROQ_API_KEY` is set in Vercel Environment Variables
+- Check that the key is valid at [console.groq.com/keys](https://console.groq.com/keys)
+- Review function logs in Vercel dashboard for errors
+
+### Images not showing
+- Confirm images are in `public/images/dishes/`
+- Check filenames match exactly what's in `data/menu.js`
+- Images must be in JPG, PNG, or WebP format
