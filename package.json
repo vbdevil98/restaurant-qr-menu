@@ -1,6 +1,6 @@
 {
-  "name": "restaurant-qr-menu",
-  "version": "0.1.0",
+  "name": "bloom-menu-app",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -12,7 +12,6 @@
     "qr": "node scripts/generate-qr.mjs"
   },
   "dependencies": {
-    "framer-motion": "^12.0.0",
     "next": "^15.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
