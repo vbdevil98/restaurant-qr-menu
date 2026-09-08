@@ -1,30 +1,28 @@
-import { Bricolage_Grotesque, Inter } from "next/font/google";
 import "./globals.css";
+import { Bricolage_Grotesque, Inter, Instrument_Serif } from "next/font/google";
+import { RESTAURANT } from "../data/menu.js";
 
-const display = Bricolage_Grotesque({
+const display = Bricolage_Grotesque({ subsets: ["latin"], variable: "--font-display" });
+const body = Inter({ subsets: ["latin"], variable: "--font-body" });
+const serif = Instrument_Serif({
   subsets: ["latin"],
-  variable: "--font-display",
-});
-
-const body = Inter({
-  subsets: ["latin"],
-  variable: "--font-body",
+  weight: "400",
+  style: ["normal", "italic"],
+  variable: "--font-serif",
 });
 
 export const metadata = {
-  title: "Scan-to-table menu",
-  description: "A fast, beautiful QR menu with AI dish summaries.",
+  title: `${RESTAURANT.name} — Menu`,
+  description: `Scan-to-table menu for ${RESTAURANT.name}.`,
 };
 
 export const viewport = {
-  themeColor: "#17110D",
-  width: "device-width",
-  initialScale: 1,
+  themeColor: "#0C0B10",
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${display.variable} ${body.variable}`}>
+    <html lang="en" className={`${display.variable} ${body.variable} ${serif.variable}`}>
       <body>{children}</body>
     </html>
   );
