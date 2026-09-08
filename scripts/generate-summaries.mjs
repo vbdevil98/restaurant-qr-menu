@@ -1,29 +1,28 @@
-// Pre-generates an AI summary for every dish and writes them to
-// data/summaries.json. Run this once (and again whenever you change the menu):
+// OPTIONAL cost/latency optimization.
 //
 //     npm run summaries
 //
-// Baking summaries ahead of time means the menu loads them instantly and costs
-// nothing while guests browse — you only pay Groq once, here, not per scan.
+// Calls Groq once per dish and writes the results to data/summaries.json.
+// After that, the backend serves those instantly and never calls Groq again
+// (until you change the menu and re-run this). Commit summaries.json and
+// redeploy for it to take effect in production.
 
 import { writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { loadEnv } from "../lib/loadEnv.mjs";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const root = join(__dirname, "..");
+const here = dirname(fileURLToPath(import.meta.url));
+const root = join(here, "..");
 
 loadEnv(join(root, ".env.local"));
 
-const { restaurants } = await import("../data/restaurants.js");
+const { MENU, RESTAURANT } = await import("../data/menu.js");
 const { summarizeDish } = await import("../lib/groq.js");
 
 async function main() {
   if (!process.env.GROQ_API_KEY) {
-    console.error(
-      "No GROQ_API_KEY found. Add it to .env.local (see .env.example) and try again."
-    );
+    console.error("No GROQ_API_KEY found. Add it to .env.local (see .env.example).");
     process.exit(1);
   }
 
@@ -31,18 +30,16 @@ async function main() {
   let ok = 0;
   let failed = 0;
 
-  for (const slug of Object.keys(restaurants)) {
-    const restaurant = restaurants[slug];
-    for (const dish of restaurant.dishes) {
-      process.stdout.write(`• ${restaurant.name} → ${dish.name} … `);
-      try {
-        out[`${slug}:${dish.id}`] = await summarizeDish(dish, restaurant.dishes);
-        ok++;
-        console.log("done");
-      } catch (error) {
-        failed++;
-        console.log("skipped (" + error.message + ")");
-      }
+  for (const dish of MENU) {
+    process.stdout.write(`• ${dish.name} … `);
+    try {
+      const others = MENU.filter((d) => d.id !== dish.id).map((d) => d.name);
+      out[dish.id] = await summarizeDish(dish, others, RESTAURANT.name);
+      ok++;
+      console.log("done");
+    } catch (err) {
+      failed++;
+      console.log("skipped (" + err.message + ")");
     }
   }
 
